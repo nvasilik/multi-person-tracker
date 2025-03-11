@@ -7,8 +7,7 @@ import numpy as np
 import os.path as osp
 from tqdm import tqdm
 from torch.utils.data import DataLoader
-from torchvision.models.detection import keypointrcnn_resnet50_fpn
-from yolov3.yolo import YOLOv3
+from torchvision.models.detection import keypointrcnn_resnet50_fpn, KeypointRCNN_ResNet50_FPN_Weights
 
 from multi_person_tracker import Sort
 from multi_person_tracker.data import ImageFolder, images_to_video
@@ -47,8 +46,9 @@ class MPT():
         self.output_format = output_format
 
         if detector_type == 'maskrcnn':
-            self.detector = keypointrcnn_resnet50_fpn(pretrained=True).to(self.device).eval()
+            self.detector = keypointrcnn_resnet50_fpn(weights=KeypointRCNN_ResNet50_FPN_Weights.DEFAULT).to(self.device).eval()
         elif detector_type == 'yolo':
+            from yolov3.yolo import YOLOv3
             self.detector = YOLOv3(
                 device=self.device, img_size=yolo_img_size, person_detector=True, video=True, return_dict=True
             )
